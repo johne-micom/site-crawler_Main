@@ -316,4 +316,5 @@ async function crawlSite(baseUrl, maxDepth) {
   }
 }
 
+module.exports = { crawlSite };
 
