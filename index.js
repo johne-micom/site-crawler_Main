@@ -26,7 +26,11 @@ app.post('/crawl', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;  // Render injects PORT (often 10000)
-app.listen(PORT, () => console
+app.listen(PORT, function(err){
+    if (err) console.log("Error in server setup")
+    console.log("Server listening on Port", PORT);
+})
+
 
 
 
