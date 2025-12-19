@@ -312,7 +312,8 @@ async function crawlSite(baseUrl, maxDepth) {
     };
 
   } finally {
-    await browser.close    await browser.close();
+    await browser.close();
   }
 }
+
 
