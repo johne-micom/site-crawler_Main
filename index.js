@@ -1,26 +1,33 @@
+
 const express = require('express');
-const bodyParser = require('body-parser');
 const { crawlSite } = require('./crawler');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (_req, res) =>
+  res.status(200).send('Site Crawler is up. POST /crawl with { "baseurl": "...", "maxdepth": 1 }')
+);
+
+app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 
 app.post('/crawl', async (req, res) => {
-  const { base_url, max_depth } = req.body;
-  if (!base_url || !max_depth) {
-    return res.status(400).json({ error: 'base_url and max_depth are required' });
-  }
+  const { baseurl, maxdepth = 1 } = req.body || {};
+  if (!baseurl) return res.status(400).json({ error: 'baseurl is required' });
+
   try {
-    const siteModel = await crawlSite(base_url, max_depth);
-    res.json(siteModel);
+    const result = await crawlSite(baseurl, maxdepth);
+    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Crawling failed', details: err.message });
   }
 });
 
+const PORT = process.env.PORT || 3000;  // Render injects PORT (often 10000)
+app.listen(PORT, () => console
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Crawler API running on port ${PORT}`));
+
 
 
